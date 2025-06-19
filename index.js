@@ -196,7 +196,7 @@ function playVideo(res) {
           return;
         }
       });
-    }, 10000);
+    }, 6000);
   });
 }
 
