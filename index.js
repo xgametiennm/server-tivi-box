@@ -8,6 +8,7 @@ const app = express();
 app.use(express.json());
 
 const TV_IP = "192.168.1.31"; // IP Android Box
+// const TV_IP = "192.168.1.31"; // IP Android Box
 
 // Gửi lệnh ADB
 function runAdbCommand(command, res, successMessage) {
@@ -62,7 +63,7 @@ app.post("/api/sleep", (req, res) => {
   runAdbCommand(command, res, "Đã gửi lệnh sleep cho Tivi");
 });
 
-async function playVideo(res) {
+async function playVideo2(res) {
   const remotePath = "/sdcard/Download/your_video.mp4";
 
   const commands = `adb shell input keyevent 26  && adb shell input keyevent 82 && adb shell am start -a android.intent.action.VIEW -d "file://${remotePath}" -t "video/mp4"
@@ -171,6 +172,31 @@ function writeLog(content) {
   const logLine = `[${new Date().toLocaleString()}] ${content}\n`;
   fs.appendFile("logs.txt", logLine, (err) => {
     if (err) console.error("Ghi log lỗi:", err);
+  });
+}
+
+// Phát resource (video, nhạc...) từ đường dẫn đã cho
+function playVideo(res) {
+  // 1. Wake up tivi (bật màn hình)
+  const wakeCmd = `adb shell input keyevent 224`;
+  const remotePath = "/sdcard/Download/your_video.mp4";
+  exec(wakeCmd, (error, stdout, stderr) => {
+    if (error) {
+      writeLog(`ADB WAKEUP ERROR: ${stderr}`);
+      if (res) return res.status(500).json({ error: stderr });
+      return;
+    }
+    setTimeout(() => {
+      // exec("adb shell input keyevent BACK", () => {});
+      const playCmd = `adb shell am start -a android.intent.action.VIEW -d "file://${remotePath}" -t "video/mp4"`;
+      exec(playCmd, (error2, stdout2, stderr2) => {
+        if (error2) {
+          writeLog(`ADB PLAY ERROR: ${stderr2}`);
+          if (res) return res.status(500).json({ error: stderr2 });
+          return;
+        }
+      });
+    }, 10000);
   });
 }
 

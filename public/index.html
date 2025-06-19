@@ -191,16 +191,20 @@
             </div>
             <div class="input-group">
                 <label for="cronTime">Lịch Cron (cronTime):</label>
-                <select id="cronTime">
+                <select id="cronTimeSelect" onchange="onCronSelectChange()">
+                    <option value="">-- Chọn lịch phổ biến --</option>
                     <option value="* * * * *">Mỗi 1 phút</option>
                     <option value="*/5 * * * *">Mỗi 5 phút</option>
                     <option value="*/10 * * * *">Mỗi 10 phút</option>
                     <option value="0 * * * *">Mỗi 1 giờ</option>
-                    <option value="0 0 * * *">Mỗi 1 ngày</option>
-                    <option value="0 0 * * 0">Mỗi 1 tuần</option>
+                    <option value="0 0 * * *">Mỗi 1 ngày (0h)</option>
+                    <option value="0 0 * * 0">Mỗi 1 tuần (Chủ nhật 0h)</option>
                     <option value="30 10 * * *">10h30 sáng mỗi ngày</option>
                     <option value="0 15 * * *">3h chiều mỗi ngày</option>
+                    <option value="custom">Tùy chỉnh...</option>
                 </select>
+                <input type="text" id="cronTimeInput" placeholder="Nhập chuỗi cron, ví dụ: 15 8 * * 1-5" style="margin-top:8px;display:none;" oninput="showCronHint()">
+                <div id="cronHint" style="color:#64748b;font-size:0.95em;margin-top:4px;"></div>
             </div>
             <div class="input-group">
                 <label for="jobName">Tên Job (jobName):</label>
@@ -283,7 +287,9 @@
 
         async function createCronJob() {
             const cronType = document.getElementById('cronType').value;
-            const cronTime = document.getElementById('cronTime').value.trim();
+            const cronTime = document.getElementById('cronTimeSelect').value === 'custom'
+    ? document.getElementById('cronTimeInput').value.trim()
+    : document.getElementById('cronTimeSelect').value;
             const jobName = document.getElementById('jobName').value.trim();
             const resultDiv = document.getElementById('cronResult');
             let source = '';
@@ -369,6 +375,44 @@
         }
 
         window.addEventListener('DOMContentLoaded', fetchCronJobs);
+
+        function onCronSelectChange() {
+            const select = document.getElementById('cronTimeSelect');
+            const input = document.getElementById('cronTimeInput');
+            const hint = document.getElementById('cronHint');
+            if (select.value === "custom") {
+                input.style.display = '';
+                input.value = '';
+                hint.textContent = 'Nhập chuỗi cron theo định dạng: phút giờ ngày tháng thứ (VD: 15 8 * * 1-5 là 8:15 sáng từ thứ 2 đến thứ 6)';
+            } else if (select.value) {
+                input.style.display = 'none';
+                hint.textContent = cronDescription(select.value);
+            } else {
+                input.style.display = 'none';
+                hint.textContent = '';
+            }
+        }
+
+        function showCronHint() {
+            const input = document.getElementById('cronTimeInput');
+            const hint = document.getElementById('cronHint');
+            hint.textContent = cronDescription(input.value);
+        }
+
+        // Gợi ý mô tả cron đơn giản
+        function cronDescription(cron) {
+            switch (cron) {
+                case "* * * * *": return "Chạy mỗi phút";
+                case "*/5 * * * *": return "Chạy mỗi 5 phút";
+                case "*/10 * * * *": return "Chạy mỗi 10 phút";
+                case "0 * * * *": return "Chạy mỗi giờ (phút 0)";
+                case "0 0 * * *": return "Chạy mỗi ngày lúc 0h";
+                case "0 0 * * 0": return "Chạy mỗi tuần (Chủ nhật 0h)";
+                case "30 10 * * *": return "Chạy lúc 10h30 sáng mỗi ngày";
+                case "0 15 * * *": return "Chạy lúc 3h chiều mỗi ngày";
+                default: return "Bạn có thể tra cứu cú pháp cron tại crontab.guru";
+            }
+        }
     </script>
 </body>
 </html>
