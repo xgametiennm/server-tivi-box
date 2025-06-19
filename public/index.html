@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>API Control Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fff;
+            margin-top: 80px;
+            padding: 48px 60px;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+            min-width: 480px;
+            /* max-width: 98vw; */
+            width: 80%;
+        }
+        h2 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 32px;
+            font-size: 2.2em;
+            letter-spacing: 1px;
+        }
+        .input-group {
+            margin-bottom: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .input-group label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 1.1em;
+        }
+        .input-group input {
+            padding: 14px 18px;
+            border: 1.5px solid #a5b4fc;
+            border-radius: 10px;
+            font-size: 1.15em;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .input-group input:focus {
+            border: 2px solid #6366f1;
+        }
+        .input-group select {
+            padding: 12px 16px;
+            border: 1.5px solid #a5b4fc;
+            border-radius: 10px;
+            font-size: 1.1em;
+            background: #f1f5f9;
+            color: #334155;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            box-shadow: 0 2px 6px rgba(99,102,241,0.04);
+            margin-top: 2px;
+        }
+        .input-group select:focus {
+            border: 2px solid #6366f1;
+            box-shadow: 0 0 0 2px #a5b4fc33;
+        }
+        .input-group option {
+            background: #fff;
+            color: #334155;
+        }
+        .btn-group {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+        button {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #6366f1 0%, #38bdf8 100%);
+            color: #fff;
+            font-size: 1.25em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+            transition: background 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%);
+            transform: translateY(-2px) scale(1.04);
+        }
+        .result {
+            margin-top: 32px;
+            min-height: 38px;
+            text-align: center;
+            color: #0f172a;
+            font-size: 1.15em;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 12px 0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .cronjob-container {
+            margin-top: 48px;
+            width: 100%;
+            max-width: 480px;
+            background: #f8fafc;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 24px;
+        }
+        h3 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 18px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                min-width: 98vw;
+                padding: 18px 4vw;
+            }
+            .btn-group {
+                flex-direction: column;
+                gap: 18px;
+            }
+        }
+        /* Thêm icon mũi tên cho select */
+        .input-group {
+            position: relative;
+        }
+        .input-group select {
+            width: 100%;
+        }
+        .input-group select::-ms-expand {
+            display: none;
+        }
+        .input-group::after {
+            content: '';
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 7px solid #6366f1;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Điều khiển Tivi Box</h2>
+        <div class="input-group">
+            <label for="youtubeInput">YouTube URL hoặc ID (chỉ dùng cho Cast):</label>
+            <input type="text" id="youtubeInput" placeholder="Nhập YouTube URL hoặc ID...">
+        </div>
+        <div class="btn-group">
+            <button onclick="callApi('cast')">Cast</button>
+            <button onclick="callApi('stop')">Stop</button>
+            <button onclick="callApi('sleep')">Sleep</button>
+            <button onclick="callApi('play')">Play Video Exercise</button>
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+    <div class="cronjob-container" style="margin-top:48px; width:100%; max-width:480px; background:#f8fafc; border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:24px;">
+        <h3 style="text-align:center; color:#2563eb; margin-bottom:18px;">Tạo Cronjob Play Video</h3>
+        <div class="input-group">
+            <label for="cronType">Loại nguồn video:</label>
+            <select id="cronType" onchange="toggleSourceInput()">
+                <option value="youtube">YouTube</option>
+                <option value="exercise">Exercise</option>
+            </select>
+        </div>
+        <div class="input-group" id="sourceGroup">
+            <label for="source">Nguồn Video (YouTube URL hoặc ID):</label>
+            <input type="text" id="source" placeholder="Nhập URL hoặc ID YouTube...">
+        </div>
+        <div class="input-group">
+            <label for="cronTime">Lịch Cron (cronTime):</label>
+            <select id="cronTime">
+                <option value="* * * * *">Mỗi 1 phút</option>
+                <option value="*/5 * * * *">Mỗi 5 phút</option>
+                <option value="*/10 * * * *">Mỗi 10 phút</option>
+                <option value="0 * * * *">Mỗi 1 giờ</option>
+                <option value="0 0 * * *">Mỗi 1 ngày</option>
+                <option value="0 0 * * 0">Mỗi 1 tuần</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="jobName">Tên Job (jobName):</label>
+            <input type="text" id="jobName" placeholder="Ví dụ: play-exercise">
+        </div>
+        <div style="text-align:center; margin-top:18px;">
+            <button onclick="createCronJob()" style="background:linear-gradient(90deg,#22d3ee 0%,#6366f1 100%);">Tạo Cronjob</button>
+        </div>
+        <div class="result" id="cronResult"></div>
+    </div>
+    <script>
+        function extractYoutubeId(input) {
+            // Nếu nhập đúng ID thì trả về luôn
+            if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+            // Nếu nhập URL thì tách ID
+            const match = input.match(/[?&]v=([^&]+)/);
+            return match ? match[1] : '';
+        }
+
+        async function callApi(action) {
+            const apiUrls = {
+                cast: '/api/cast',
+                stop: '/api/stop',
+                sleep: '/api/sleep',
+                play: '/api/play'
+            };
+            document.getElementById('result').textContent = 'Đang gửi yêu cầu...';
+            let options = { method: 'POST', headers: { 'Content-Type': 'application/json' } };
+            if (action === 'cast') {
+                const input = document.getElementById('youtubeInput').value.trim();
+                const youtubeId = extractYoutubeId(input);
+                if (!youtubeId) {
+                    document.getElementById('result').textContent = 'Vui lòng nhập đúng YouTube ID hoặc URL!';
+                    return;
+                }
+                options.body = JSON.stringify({ youtubeId });
+            }
+            try {
+                const response = await fetch(apiUrls[action], options);
+                const data = await response.json();
+                document.getElementById('result').textContent = 'Kết quả: ' + JSON.stringify(data);
+            } catch (err) {
+                document.getElementById('result').textContent = 'Lỗi: ' + err.message;
+            }
+        }
+
+        function toggleSourceInput() {
+            const type = document.getElementById('cronType').value;
+            const sourceGroup = document.getElementById('sourceGroup');
+            if (type === 'youtube') {
+                sourceGroup.style.display = '';
+            } else {
+                sourceGroup.style.display = 'none';
+            }
+        }
+        toggleSourceInput();
+
+        async function createCronJob() {
+            const cronType = document.getElementById('cronType').value;
+            const cronTime = document.getElementById('cronTime').value.trim();
+            const jobName = document.getElementById('jobName').value.trim();
+            const resultDiv = document.getElementById('cronResult');
+            let source = '';
+            if (cronType === 'youtube') {
+                source = document.getElementById('source').value.trim();
+                if (!source) {
+                    resultDiv.textContent = 'Vui lòng nhập nguồn video YouTube!';
+                    return;
+                }
+            }
+            if (!cronTime || !jobName) {
+                resultDiv.textContent = 'Vui lòng nhập đầy đủ thông tin!';
+                return;
+            }
+
+            const body = { cronTime, jobName, type: cronType };
+            if (cronType === 'youtube') body.source = source;
+
+            resultDiv.textContent = 'Đang gửi yêu cầu...';
+            try {
+                const response = await fetch('/api/cron-play', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    resultDiv.textContent = 'Thành công: ' + data.message;
+                } else {
+                    resultDiv.textContent = 'Lỗi: ' + data.message;
+                }
+            } catch (err) {
+                resultDiv.textContent = 'Lỗi: ' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>

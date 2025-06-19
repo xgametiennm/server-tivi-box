@@ -1,0 +1,21 @@
+{
+  "name": "chrome-cast-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "castv2-client": "^1.2.0",
+    "child_process": "^1.0.2",
+    "dnssd": "^0.4.1",
+    "express": "^5.1.0",
+    "http": "^0.0.1-security",
+    "node-cron": "^4.1.0",
+    "xmlbuilder": "^15.1.1"
+  }
+}
