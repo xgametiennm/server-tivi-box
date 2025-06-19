@@ -1,9 +1,7 @@
 FROM node:20-slim
 
 # Cài đặt adb và python3
-RUN apt-get update && \
-    apt-get install -y android-tools-adb    docker run -d -p 3031:3031 --name tivi-box-server --privileged -v /dev/bus/usb:/dev/bus/usb tivi-box-server && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y android-tools-adb python3 python3-pip && rm -rf /var/lib/apt/lists/*
 
 # Tạo thư mục app và copy code vào container
 WORKDIR /app

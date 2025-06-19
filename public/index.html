@@ -139,6 +139,12 @@
             border-radius: 8px;
             padding: 10px 0;
             box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            width: 100%;
+            max-width: 400px;      /* Giới hạn chiều rộng */
+            word-break: break-all; /* Tự động xuống dòng nếu quá dài */
+            overflow-x: auto;      /* Hiện thanh cuộn ngang nếu vẫn tràn */
+            white-space: pre-wrap; /* Giữ định dạng xuống dòng */
+            box-sizing: border-box;
         }
         table {
             width: 100%;

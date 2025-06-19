@@ -16,6 +16,6 @@ fi
 
 # Chạy container mới
 echo "Đang chạy container mới..."
-docker run -d -p 3031:3031 --name $CONTAINER_NAME $IMAGE_NAME
-
+# docker run -d -p 3031:3031 --name $CONTAINER_NAME $IMAGE_NAME
+docker run -d -p 3031:3031 --name $CONTAINER_NAME  $IMAGE_NAME
 echo "Server đã chạy tại http://localhost:3031"
