@@ -131,7 +131,7 @@ app.post("/api/cron-play", (req, res) => {
         `🔔 Cronjob [${jobName}] chạy lúc ${new Date().toLocaleString()} - Lịch: ${cronTime}`
       );
       await playVideo(undefined);
-    });
+    }, { timezone: "Asia/Ho_Chi_Minh" });
     playJobs[jobName] = job;
     res.json({
       status: "success",
