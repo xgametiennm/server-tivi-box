@@ -204,8 +204,8 @@ function playVideo(res) {
     setTimeout(() => {
       const command = `adb shell input keyevent KEYCODE_SLEEP`;
       runAdbCommand(command, res, "Đã gửi lệnh sleep cho Tivi");
-    });
-  }, 200000);
+    },200000);
+  });
 }
 
 // 🚀 Server
