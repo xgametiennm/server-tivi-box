@@ -121,17 +121,21 @@ app.post("/api/cron-play", (req, res) => {
   }
   // Tạo cronjob mới
   try {
-    const job = cron.schedule(cronTime, async () => {
-      writeLog(
-        `Cronjob [${jobName}]: Play video (${type})${
-          type === "youtube" ? " - source: " + source : ""
-        }`
-      );
-      console.log(
-        `🔔 Cronjob [${jobName}] chạy lúc ${new Date().toLocaleString()} - Lịch: ${cronTime}`
-      );
-      await playVideo(undefined);
-    }, { timezone: "Asia/Ho_Chi_Minh" });
+    const job = cron.schedule(
+      cronTime,
+      async () => {
+        writeLog(
+          `Cronjob [${jobName}]: Play video (${type})${
+            type === "youtube" ? " - source: " + source : ""
+          }`
+        );
+        console.log(
+          `🔔 Cronjob [${jobName}] chạy lúc ${new Date().toLocaleString()} - Lịch: ${cronTime}`
+        );
+        await playVideo(undefined);
+      },
+      { timezone: "Asia/Ho_Chi_Minh" }
+    );
     playJobs[jobName] = job;
     res.json({
       status: "success",
@@ -196,8 +200,12 @@ function playVideo(res) {
           return;
         }
       });
-    }, 6000);
-  });
+    }, 36000);
+    setTimeout(() => {
+      const command = `adb shell input keyevent KEYCODE_SLEEP`;
+      runAdbCommand(command, res, "Đã gửi lệnh sleep cho Tivi");
+    });
+  }, 200000);
 }
 
 // 🚀 Server
