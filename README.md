@@ -103,8 +103,8 @@ app.post("/sleep", (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("📡 Server ADB Cast chạy tại http://localhost:3000");
+app.listen(3031, () => {
+  console.log("📡 Server ADB Cast chạy tại http://localhost:3031");
 });
 ```
 
@@ -119,7 +119,7 @@ node index.js
 
 ### Gửi lệnh:
 - **Phát video YouTube**
-  - Endpoint: `POST http://localhost:3000/cast`
+  - Endpoint: `POST http://localhost:3031/cast`
   - Body:
     ```json
     {
@@ -128,10 +128,10 @@ node index.js
     ```
 
 - **Dừng phát video**
-  - `POST http://localhost:3000/stop`
+  - `POST http://localhost:3031/stop`
 
 - **Sleep (Tắt màn hình)**
-  - `POST http://localhost:3000/sleep`
+  - `POST http://localhost:3031/sleep`
 
 ---
 

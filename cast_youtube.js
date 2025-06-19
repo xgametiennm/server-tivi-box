@@ -27,6 +27,6 @@ const command = `adb connect ${TV_IP} && adb shell am start -n com.google.androi
   });
 });
 
-app.listen(3000, () => {
-  console.log("📡 Server ADB Cast chạy tại http://localhost:3000");
+app.listen(3031, () => {
+  console.log("📡 Server ADB Cast chạy tại http://localhost:3031");
 });
