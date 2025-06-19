@@ -5,54 +5,63 @@
     <title>API Control Panel</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
         body {
+            min-height: 100vh;
+            min-width: 100vw;
+            height: 100vh;
+            width: 100vw;
+            box-sizing: border-box;
             background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
             font-family: 'Segoe UI', Arial, sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            justify-content: center;
         }
-        .container {
+        .main-layout {
+            display: flex;
+            flex-direction: row;
+            gap: 32px;
+            width: 100vw;
+            max-width: 1400px;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 32px 0;
+        }
+        .panel {
             background: #fff;
-            margin-top: 80px;
-            padding: 48px 60px;
-            border-radius: 24px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.12);
-            min-width: 480px;
-            /* max-width: 98vw; */
-            width: 80%;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 32px 24px;
+            min-width: 340px;
+            max-width: 420px;
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
         }
-        h2 {
+        h2, h3 {
             text-align: center;
             color: #1e293b;
-            margin-bottom: 32px;
-            font-size: 2.2em;
+            margin-bottom: 24px;
+            font-size: 1.5em;
             letter-spacing: 1px;
         }
         .input-group {
-            margin-bottom: 32px;
+            margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         .input-group label {
-            font-weight: 600;
+            font-weight: 500;
             color: #334155;
-            font-size: 1.1em;
         }
-        .input-group input {
-            padding: 14px 18px;
-            border: 1.5px solid #a5b4fc;
-            border-radius: 10px;
-            font-size: 1.15em;
-            outline: none;
-            transition: border 0.2s;
-        }
-        .input-group input:focus {
-            border: 2px solid #6366f1;
-        }
-        .input-group select {
+        .input-group input, .input-group select {
             padding: 12px 16px;
             border: 1.5px solid #a5b4fc;
             border-radius: 10px;
@@ -67,7 +76,7 @@
             box-shadow: 0 2px 6px rgba(99,102,241,0.04);
             margin-top: 2px;
         }
-        .input-group select:focus {
+        .input-group input:focus, .input-group select:focus {
             border: 2px solid #6366f1;
             box-shadow: 0 0 0 2px #a5b4fc33;
         }
@@ -75,64 +84,6 @@
             background: #fff;
             color: #334155;
         }
-        .btn-group {
-            display: flex;
-            gap: 32px;
-            justify-content: center;
-            margin-bottom: 24px;
-        }
-        button {
-            padding: 16px 40px;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(90deg, #6366f1 0%, #38bdf8 100%);
-            color: #fff;
-            font-size: 1.25em;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(99,102,241,0.08);
-            transition: background 0.2s, transform 0.1s;
-        }
-        button:hover {
-            background: linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%);
-            transform: translateY(-2px) scale(1.04);
-        }
-        .result {
-            margin-top: 32px;
-            min-height: 38px;
-            text-align: center;
-            color: #0f172a;
-            font-size: 1.15em;
-            background: #f1f5f9;
-            border-radius: 8px;
-            padding: 12px 0;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-        }
-        .cronjob-container {
-            margin-top: 48px;
-            width: 100%;
-            max-width: 480px;
-            background: #f8fafc;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            padding: 24px;
-        }
-        h3 {
-            text-align: center;
-            color: #2563eb;
-            margin-bottom: 18px;
-        }
-        @media (max-width: 600px) {
-            .container {
-                min-width: 98vw;
-                padding: 18px 4vw;
-            }
-            .btn-group {
-                flex-direction: column;
-                gap: 18px;
-            }
-        }
-        /* Thêm icon mũi tên cho select */
         .input-group {
             position: relative;
         }
@@ -155,55 +106,125 @@
             border-top: 7px solid #6366f1;
             transform: translateY(-50%);
         }
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #6366f1 0%, #38bdf8 100%);
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+            transition: background 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%);
+            transform: translateY(-2px) scale(1.04);
+        }
+        .result {
+            margin-top: 18px;
+            min-height: 32px;
+            text-align: center;
+            color: #0f172a;
+            font-size: 1em;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 10px 0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px 4px;
+            text-align: left;
+        }
+        th {
+            background: #e0e7ff;
+        }
+        td {
+            background: #f8fafc;
+        }
+        @media (max-width: 1100px) {
+            .main-layout {
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+            .panel {
+                min-width: 90vw;
+                max-width: 98vw;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Điều khiển Tivi Box</h2>
-        <div class="input-group">
-            <label for="youtubeInput">YouTube URL hoặc ID (chỉ dùng cho Cast):</label>
-            <input type="text" id="youtubeInput" placeholder="Nhập YouTube URL hoặc ID...">
+    <div class="main-layout">
+        <!-- Panel 1: Tạo cronjob -->
+        <div class="panel">
+            <h3>Tạo Cronjob Play Video</h3>
+            <div class="input-group">
+                <label for="cronType">Loại nguồn video:</label>
+                <select id="cronType" onchange="toggleSourceInput()">
+                    <option value="youtube">YouTube</option>
+                    <option value="exercise">Exercise</option>
+                </select>
+            </div>
+            <div class="input-group" id="sourceGroup">
+                <label for="source">Nguồn Video (YouTube URL hoặc ID):</label>
+                <input type="text" id="source" placeholder="Nhập URL hoặc ID YouTube...">
+            </div>
+            <div class="input-group">
+                <label for="cronTime">Lịch Cron (cronTime):</label>
+                <select id="cronTime">
+                    <option value="* * * * *">Mỗi 1 phút</option>
+                    <option value="*/5 * * * *">Mỗi 5 phút</option>
+                    <option value="*/10 * * * *">Mỗi 10 phút</option>
+                    <option value="0 * * * *">Mỗi 1 giờ</option>
+                    <option value="0 0 * * *">Mỗi 1 ngày</option>
+                    <option value="0 0 * * 0">Mỗi 1 tuần</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="jobName">Tên Job (jobName):</label>
+                <input type="text" id="jobName" placeholder="Ví dụ: play-exercise">
+            </div>
+            <div style="text-align:center; margin-top:18px;">
+                <button onclick="createCronJob()" style="background:linear-gradient(90deg,#22d3ee 0%,#6366f1 100%);">Tạo Cronjob</button>
+            </div>
+            <div class="result" id="cronResult"></div>
         </div>
-        <div class="btn-group">
-            <button onclick="callApi('cast')">Cast</button>
-            <button onclick="callApi('stop')">Stop</button>
-            <button onclick="callApi('sleep')">Sleep</button>
-            <button onclick="callApi('play')">Play Video Exercise</button>
+
+        <!-- Panel 2: Điều khiển Tivi Box -->
+        <div class="panel">
+            <h2>Điều khiển Tivi Box</h2>
+            <div class="input-group">
+                <label for="youtubeInput">YouTube URL hoặc ID (chỉ dùng cho Cast):</label>
+                <input type="text" id="youtubeInput" placeholder="Nhập YouTube URL hoặc ID...">
+            </div>
+            <div class="btn-group">
+                <button onclick="callApi('cast')">Cast</button>
+                <button onclick="callApi('stop')">Stop</button>
+                <button onclick="callApi('sleep')">Sleep</button>
+                <button onclick="callApi('play')">Play Video Exercise</button>
+            </div>
+            <div class="result" id="result"></div>
         </div>
-        <div class="result" id="result"></div>
-    </div>
-    <div class="cronjob-container" style="margin-top:48px; width:100%; max-width:480px; background:#f8fafc; border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:24px;">
-        <h3 style="text-align:center; color:#2563eb; margin-bottom:18px;">Tạo Cronjob Play Video</h3>
-        <div class="input-group">
-            <label for="cronType">Loại nguồn video:</label>
-            <select id="cronType" onchange="toggleSourceInput()">
-                <option value="youtube">YouTube</option>
-                <option value="exercise">Exercise</option>
-            </select>
+
+        <!-- Panel 3: Danh sách cronjob -->
+        <div class="panel">
+            <h3>Danh sách Cronjob</h3>
+            <div id="cronJobList"></div>
         </div>
-        <div class="input-group" id="sourceGroup">
-            <label for="source">Nguồn Video (YouTube URL hoặc ID):</label>
-            <input type="text" id="source" placeholder="Nhập URL hoặc ID YouTube...">
-        </div>
-        <div class="input-group">
-            <label for="cronTime">Lịch Cron (cronTime):</label>
-            <select id="cronTime">
-                <option value="* * * * *">Mỗi 1 phút</option>
-                <option value="*/5 * * * *">Mỗi 5 phút</option>
-                <option value="*/10 * * * *">Mỗi 10 phút</option>
-                <option value="0 * * * *">Mỗi 1 giờ</option>
-                <option value="0 0 * * *">Mỗi 1 ngày</option>
-                <option value="0 0 * * 0">Mỗi 1 tuần</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label for="jobName">Tên Job (jobName):</label>
-            <input type="text" id="jobName" placeholder="Ví dụ: play-exercise">
-        </div>
-        <div style="text-align:center; margin-top:18px;">
-            <button onclick="createCronJob()" style="background:linear-gradient(90deg,#22d3ee 0%,#6366f1 100%);">Tạo Cronjob</button>
-        </div>
-        <div class="result" id="cronResult"></div>
     </div>
     <script>
         function extractYoutubeId(input) {
@@ -283,6 +304,7 @@
                 const data = await response.json();
                 if (data.status === 'success') {
                     resultDiv.textContent = 'Thành công: ' + data.message;
+                    fetchCronJobs();
                 } else {
                     resultDiv.textContent = 'Lỗi: ' + data.message;
                 }
@@ -290,6 +312,55 @@
                 resultDiv.textContent = 'Lỗi: ' + err.message;
             }
         }
+
+        async function fetchCronJobs() {
+            const listDiv = document.getElementById('cronJobList');
+            listDiv.textContent = 'Đang tải danh sách...';
+            try {
+                const res = await fetch('/api/cron-jobs');
+                const data = await res.json();
+                if (data.status === 'success' && data.jobs.length > 0) {
+                    listDiv.innerHTML = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tên Job</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.jobs.map(job => `
+                                    <tr>
+                                        <td>${job}</td>
+                                        <td>
+                                            <button onclick="deleteCronJob('${job}')" style="background:#ef4444;color:#fff;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;">Xóa</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    listDiv.textContent = 'Không có cronjob nào!';
+                }
+            } catch (err) {
+                listDiv.textContent = 'Lỗi tải danh sách!';
+            }
+        }
+
+        async function deleteCronJob(jobName) {
+            if (!confirm(`Bạn có chắc muốn xóa cronjob "${jobName}"?`)) return;
+            try {
+                const res = await fetch(`/api/cron-job/${jobName}`, { method: 'DELETE' });
+                const data = await res.json();
+                alert(data.message || 'Đã xóa!');
+                fetchCronJobs();
+            } catch (err) {
+                alert('Lỗi xóa cronjob!');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', fetchCronJobs);
     </script>
 </body>
 </html>

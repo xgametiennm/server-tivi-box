@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const { exec } = require("child_process");
 const cron = require("node-cron");
+const fs = require("fs");
 
 const app = express();
 app.use(express.json());
@@ -12,14 +13,25 @@ const TV_IP = "192.168.1.31"; // IP Android Box
 function runAdbCommand(command, res, successMessage) {
   const fullCommand = `adb connect ${TV_IP} && ${command}`;
   console.log(`▶️ Gửi lệnh: ${fullCommand}`);
-  exec(fullCommand, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`❌ Lỗi ADB: ${stderr}`);
-      return res.status(500).json({ error: stderr || error.message });
-    }
-    console.log(`✅ ${successMessage}`);
-    res.json({ message: successMessage, stdout });
-  });
+  if (res) {
+    exec(fullCommand, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`❌ Lỗi ADB: ${stderr}`);
+        return res.status(500).json({ error: stderr || error.message });
+      }
+      console.log(`✅ ${successMessage}`);
+      res.json({ message: successMessage, stdout });
+    });
+  } else {
+    exec(fullCommand, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`❌ Lỗi ADB: ${stderr}`);
+        return false;
+      }
+      console.log(`✅ ${successMessage}`);
+      return true;
+    });
+  }
 }
 
 // ▶️ Cast YouTube video
@@ -109,14 +121,20 @@ app.post("/api/cron-play", (req, res) => {
   // Tạo cronjob mới
   try {
     const job = cron.schedule(cronTime, async () => {
-      // Gọi hàm play video từ source ở đây
-      await playVideo(); // Giả sử bạn có hàm playVideo để xử lý việc phát video
-      // Ví dụ: playVideo(source);
+      writeLog(
+        `Cronjob [${jobName}]: Play video (${type})${
+          type === "youtube" ? " - source: " + source : ""
+        }`
+      );
+      console.log(
+        `🔔 Cronjob [${jobName}] chạy lúc ${new Date().toLocaleString()} - Lịch: ${cronTime}`
+      );
+      await playVideo(undefined);
     });
     playJobs[jobName] = job;
     res.json({
       status: "success",
-      message: `Đã tạo cronjob [${jobName}] với lịch "${cronTime}" cho source "${source}"`,
+      message: `Đã tạo cronjob [${jobName}] với lịch "${cronTime}"`,
     });
   } catch (err) {
     res
@@ -124,6 +142,37 @@ app.post("/api/cron-play", (req, res) => {
       .json({ status: "error", message: "Lỗi tạo cronjob: " + err.message });
   }
 });
+
+// API liệt kê các cronjob hiện tại
+app.get("/api/cron-jobs", (req, res) => {
+  res.json({
+    status: "success",
+    jobs: Object.keys(playJobs),
+  });
+});
+
+// API xóa cronjob theo tên
+app.delete("/api/cron-job/:jobName", (req, res) => {
+  console.log("Xóa cronjob:", req.params.jobName);
+  const { jobName } = req.params;
+  if (playJobs[jobName]) {
+    playJobs[jobName].stop();
+    delete playJobs[jobName];
+    res.json({ status: "success", message: `Đã xóa cronjob [${jobName}]` });
+  } else {
+    res.status(404).json({
+      status: "error",
+      message: `Không tìm thấy cronjob [${jobName}]`,
+    });
+  }
+});
+
+function writeLog(content) {
+  const logLine = `[${new Date().toLocaleString()}] ${content}\n`;
+  fs.appendFile("logs.txt", logLine, (err) => {
+    if (err) console.error("Ghi log lỗi:", err);
+  });
+}
 
 // 🚀 Server
 app.listen(3031, () => {
