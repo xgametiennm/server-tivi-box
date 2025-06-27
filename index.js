@@ -200,11 +200,11 @@ function playVideo(res) {
           return;
         }
       });
-    }, 36000);
-    setTimeout(() => {
-      const command = `adb shell input keyevent KEYCODE_SLEEP`;
-      runAdbCommand(command, res, "Đã gửi lệnh sleep cho Tivi");
-    },200000);
+    },0);
+    // setTimeout(() => {
+    //   const command = `adb shell input keyevent KEYCODE_SLEEP`;
+    //   runAdbCommand(command, res, "Đã gửi lệnh sleep cho Tivi");
+    // },200000);
   });
 }
 
