@@ -73,7 +73,7 @@ async function playVideo2(res) {
 
 app.post("/api/play", (req, res) => {
   try {
-    playVideo(res);
+    playVideo2(res);
   } catch (error) {
     console.error("❌ Lỗi khi phát video:", error);
     return res
@@ -200,7 +200,7 @@ function playVideo(res) {
           return;
         }
       });
-    },0);
+    },38000);
     // setTimeout(() => {
     //   const command = `adb shell input keyevent KEYCODE_SLEEP`;
     //   runAdbCommand(command, res, "Đã gửi lệnh sleep cho Tivi");
